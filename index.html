@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WPLN English Writing Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .test-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .timer {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .timer.warning {
+            background: linear-gradient(45deg, #ff9500, #ff6b00);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .timer-control {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .timer-btn:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+
+        .timer-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .question {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .word-counter {
+            position: absolute;
+            bottom: -25px;
+            right: 0;
+            font-size: 0.9em;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .word-counter.under {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .word-counter.perfect {
+            background: #c6f6d5;
+            color: #25543e;
+        }
+
+        .word-counter.over {
+            background: #fbd38d;
+            color: #c05621;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #38b2ac);
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .instructions {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #2c5282;
+        }
+
+        .chat-message {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .chat-author {
+            font-weight: bold;
+            color: #2f855a;
+            margin-bottom: 5px;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .submit-btn {
+            background: white;
+            color: #38a169;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>WPLN English Writing Test</h1>
+            <p>Complete all sections following the word count guidelines</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Part 1: Word-level writing -->
+        <div class="test-section" id="part1">
+            <div class="section-header">
+                <div class="section-title">Part 1: Word-level Writing</div>
+                <div class="timer" id="timer1">03:00</div>
+            </div>
+            
+            <div class="timer-control">
+                <button class="timer-btn" id="startBtn1" onclick="startTimer(1, 180)">Start Timer</button>
+                <button class="timer-btn" id="pauseBtn1" onclick="pauseTimer(1)" disabled>Pause</button>
+                <button class="timer-btn" id="resetBtn1" onclick="resetTimer(1, 180)">Reset</button>
+            </div>
+            
+            <div class="instructions">
+                You want to join a cooking club. You have 5 messages from a member of the club. Write short answers (1-5 words) to each message.
+            </div>
+
+            <div class="question-block">
+                <div class="question">Example: What's your name?</div>
+                <div class="input-container">
+                    <input type="text" placeholder="Sarah Johnson" disabled style="background: #f7fafc;">
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">What type of cuisine do you enjoy?</div>
+                <div class="input-container">
+                    <input type="text" id="p1q1" maxlength="25">
+                    <div class="word-counter" id="p1q1-counter">0 words</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">How often do you cook?</div>
+                <div class="input-container">
+                    <input type="text" id="p1q2" maxlength="25">
+                    <div class="word-counter" id="p1q2-counter">0 words</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">Do you have any allergies?</div>
+                <div class="input-container">
+                    <input type="text" id="p1q3" maxlength="25">
+                    <div class="word-counter" id="p1q3-counter">0 words</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">What's your skill level?</div>
+                <div class="input-container">
+                    <input type="text" id="p1q4" maxlength="25">
+                    <div class="word-counter" id="p1q4-counter">0 words</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">When are you available?</div>
+                <div class="input-container">
+                    <input type="text" id="p1q5" maxlength="25">
+                    <div class="word-counter" id="p1q5-counter">0 words</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Short text writing -->
+        <div class="test-section" id="part2" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">Part 2: Short Text Writing</div>
+                <div class="timer" id="timer2">07:00</div>
+            </div>
+            
+            <div class="timer-control">
+                <button class="timer-btn" id="startBtn2" onclick="startTimer(2, 420)">Start Timer</button>
+                <button class="timer-btn" id="pauseBtn2" onclick="pauseTimer(2)" disabled>Pause</button>
+                <button class="timer-btn" id="resetBtn2" onclick="resetTimer(2, 420)">Reset</button>
+            </div>
+            
+            <div class="instructions">
+                You are a new member of the cooking club. Fill in the form. Write in sentences. Use 20-30 words. You have 7 minutes.
+            </div>
+
+            <div class="question-block">
+                <div class="question">Culinary Masters Cooking Club</div>
+                <p>Please write some of the reasons why you want to learn cooking skills.</p>
+                <div class="input-container">
+                    <textarea id="p2q1" placeholder="Write your response here..."></textarea>
+                    <div class="word-counter" id="p2q1-counter">0 words (Target: 20-30 words)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Three written parts -->
+        <div class="test-section" id="part3" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">Part 3: Social Interaction</div>
+                <div class="timer" id="timer3">10:00</div>
+            </div>
+            
+            <div class="timer-control">
+                <button class="timer-btn" id="startBtn3" onclick="startTimer(3, 600)">Start Timer</button>
+                <button class="timer-btn" id="pauseBtn3" onclick="pauseTimer(3)" disabled>Pause</button>
+                <button class="timer-btn" id="resetBtn3" onclick="resetTimer(3, 600)">Reset</button>
+            </div>
+            
+            <div class="instructions">
+                You are a member of a cooking club. You are talking to three other members in the club chat room. Talk to them using sentences. Use 30-40 words per answer. Answer all three questions.
+            </div>
+
+            <div class="question-block">
+                <div class="chat-message">
+                    <div class="chat-author">Chef Maria:</div>
+                    Hi! Welcome to the club. I specialize in Italian cuisine and love making fresh pasta every Sunday. What type of cooking interests you most?
+                </div>
+                <div class="input-container">
+                    <textarea id="p3q1" placeholder="Type your response..."></textarea>
+                    <div class="word-counter" id="p3q1-counter">0 words (Target: 30-40 words)</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="chat-message">
+                    <div class="chat-author">David:</div>
+                    Welcome! Can you tell me about the most memorable meal you've ever cooked or eaten?
+                </div>
+                <div class="input-container">
+                    <textarea id="p3q2" placeholder="Type your response..."></textarea>
+                    <div class="word-counter" id="p3q2-counter">0 words (Target: 30-40 words)</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="chat-message">
+                    <div class="chat-author">Lisa:</div>
+                    What's your biggest cooking disaster story, and what important lesson did you learn from that experience?
+                </div>
+                <div class="input-container">
+                    <textarea id="p3q3" placeholder="Type your response..."></textarea>
+                    <div class="word-counter" id="p3q3-counter">0 words (Target: 30-40 words)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Formal and informal writing -->
+        <div class="test-section" id="part4" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">Part 4: Formal and Informal Writing</div>
+                <div class="timer" id="timer4">30:00</div>
+            </div>
+            
+            <div class="timer-control">
+                <button class="timer-btn" id="startBtn4" onclick="startTimer(4, 1800)">Start Timer</button>
+                <button class="timer-btn" id="pauseBtn4" onclick="pauseTimer(4)" disabled>Pause</button>
+                <button class="timer-btn" id="resetBtn4" onclick="resetTimer(4, 1800)">Reset</button>
+            </div>
+            
+            <div class="instructions">
+                You are a member of a cooking club. You received this email from the club:
+                <br><br>
+                <em>"Dear Member, We regret to inform you that the advanced pastry workshop scheduled for this Saturday has been cancelled due to our head chef's illness. Workshop fees will be refunded, but we cannot reimburse the cost of ingredients you purchased in advance. We apologize for this inconvenience."</em>
+            </div>
+
+            <div class="question-block">
+                <div class="question">Task 1: Write a message to your friend about your feelings and what you think the club should do about the situation. Write about 40-50 words. You have 10 minutes.</div>
+                <div class="input-container">
+                    <textarea id="p4q1" placeholder="Write your informal message here..."></textarea>
+                    <div class="word-counter" id="p4q1-counter">0 words (Target: 40-50 words)</div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">Task 2: Write an email to the president of the club about your feelings and what you think the club should do about the situation. Write 120-150 words. You have 20 minutes.</div>
+                <div class="input-container">
+                    <textarea id="p4q2" style="min-height: 200px;" placeholder="Write your formal email here..."></textarea>
+                    <div class="word-counter" id="p4q2-counter">0 words (Target: 120-150 words)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSection(-1)" disabled>← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSection(1)">Next →</button>
+        </div>
+
+        <div class="submit-section" id="submitSection" style="display: none;">
+            <h2 style="color: white; margin-bottom: 20px;">Ready to Submit?</h2>
+            <p style="color: white; margin-bottom: 30px;">Please review your answers before submitting your test.</p>
+            <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 4;
+
+        // Timer variables
+        let timers = {};
+        let intervals = {};
+        let originalTimes = {
+            1: 180,   // 3 minutes
+            2: 420,   // 7 minutes  
+            3: 600,   // 10 minutes
+            4: 1800   // 30 minutes
+        };
+
+        // Timer functions
+        function startTimer(section, seconds) {
+            if (intervals[section]) {
+                clearInterval(intervals[section]);
+            }
+            
+            if (!timers[section]) {
+                timers[section] = seconds;
+            }
+            
+            const startBtn = document.getElementById(`startBtn${section}`);
+            const pauseBtn = document.getElementById(`pauseBtn${section}`);
+            
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            
+            intervals[section] = setInterval(() => {
+                timers[section]--;
+                updateTimerDisplay(section);
+                
+                if (timers[section] <= 0) {
+                    clearInterval(intervals[section]);
+                    onTimerComplete(section);
+                }
+            }, 1000);
+        }
+
+        function pauseTimer(section) {
+            if (intervals[section]) {
+                clearInterval(intervals[section]);
+                intervals[section] = null;
+            }
+            
+            const startBtn = document.getElementById(`startBtn${section}`);
+            const pauseBtn = document.getElementById(`pauseBtn${section}`);
+            
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            startBtn.textContent = 'Resume';
+        }
+
+        function resetTimer(section, seconds) {
+            if (intervals[section]) {
+                clearInterval(intervals[section]);
+                intervals[section] = null;
+            }
+            
+            timers[section] = seconds;
+            updateTimerDisplay(section);
+            
+            const startBtn = document.getElementById(`startBtn${section}`);
+            const pauseBtn = document.getElementById(`pauseBtn${section}`);
+            const timerDisplay = document.getElementById(`timer${section}`);
+            
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            startBtn.textContent = 'Start Timer';
+            
+            // Reset timer styling
+            timerDisplay.className = 'timer';
+        }
+
+        function updateTimerDisplay(section) {
+            const timerDisplay = document.getElementById(`timer${section}`);
+            const minutes = Math.floor(timers[section] / 60);
+            const seconds = timers[section] % 60;
+            
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timerDisplay.textContent = timeString;
+            
+            // Update timer styling based on remaining time
+            const originalTime = originalTimes[section];
+            const percentRemaining = (timers[section] / originalTime) * 100;
+            
+            timerDisplay.className = 'timer';
+            
+            if (percentRemaining <= 10) {
+                timerDisplay.classList.add('critical');
+            } else if (percentRemaining <= 25) {
+                timerDisplay.classList.add('warning');
+            }
+        }
+
+        function onTimerComplete(section) {
+            const timerDisplay = document.getElementById(`timer${section}`);
+            const startBtn = document.getElementById(`startBtn${section}`);
+            const pauseBtn = document.getElementById(`pauseBtn${section}`);
+            
+            timerDisplay.textContent = 'TIME UP!';
+            timerDisplay.className = 'timer critical';
+            
+            startBtn.disabled = true;
+            pauseBtn.disabled = true;
+            
+            // Play alert sound (if supported)
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBze3QdSUHM3Iy');
+                audio.play();
+            } catch (e) {
+                // Fallback for browsers that don't support audio
+                console.log('Timer completed for section', section);
+            }
+            
+            alert(`Time's up for Part ${section}!`);
+        }
+
+        // Initialize timers
+        function initializeTimers() {
+            for (let section = 1; section <= 4; section++) {
+                timers[section] = originalTimes[section];
+                updateTimerDisplay(section);
+            }
+        }
+
+        // Word count targets for each input
+        const wordTargets = {
+            // Part 1: 1-5 words each
+            'p1q1': { min: 1, max: 5 },
+            'p1q2': { min: 1, max: 5 },
+            'p1q3': { min: 1, max: 5 },
+            'p1q4': { min: 1, max: 5 },
+            'p1q5': { min: 1, max: 5 },
+            // Part 2: 20-30 words
+            'p2q1': { min: 20, max: 30 },
+            // Part 3: 30-40 words each
+            'p3q1': { min: 30, max: 40 },
+            'p3q2': { min: 30, max: 40 },
+            'p3q3': { min: 30, max: 40 },
+            // Part 4: 40-50 and 120-150 words
+            'p4q1': { min: 40, max: 50 },
+            'p4q2': { min: 120, max: 150 }
+        };
+
+        function countWords(text) {
+            return text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        }
+
+        function updateWordCounter(inputId) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(inputId + '-counter');
+            const target = wordTargets[inputId];
+            
+            if (!input || !counter || !target) return;
+            
+            const wordCount = countWords(input.value);
+            const isUnder = wordCount < target.min;
+            const isPerfect = wordCount >= target.min && wordCount <= target.max;
+            const isOver = wordCount > target.max;
+            
+            // Update counter text
+            if (inputId.startsWith('p1')) {
+                counter.textContent = `${wordCount} words (1-5 words)`;
+            } else if (inputId === 'p2q1') {
+                counter.textContent = `${wordCount} words (Target: 20-30 words)`;
+            } else if (inputId.startsWith('p3')) {
+                counter.textContent = `${wordCount} words (Target: 30-40 words)`;
+            } else if (inputId === 'p4q1') {
+                counter.textContent = `${wordCount} words (Target: 40-50 words)`;
+            } else if (inputId === 'p4q2') {
+                counter.textContent = `${wordCount} words (Target: 120-150 words)`;
+            }
+            
+            // Update counter styling
+            counter.className = 'word-counter';
+            if (isPerfect) {
+                counter.classList.add('perfect');
+            } else if (isOver) {
+                counter.classList.add('over');
+            } else {
+                counter.classList.add('under');
+            }
+        }
+
+        function changeSection(direction) {
+            const newSection = currentSection + direction;
+            
+            if (newSection < 1 || newSection > totalSections) return;
+            
+            // Pause current section timer when leaving
+            if (intervals[currentSection]) {
+                pauseTimer(currentSection);
+            }
+            
+            // Hide current section
+            document.getElementById(`part${currentSection}`).style.display = 'none';
+            
+            // Show new section
+            currentSection = newSection;
+            document.getElementById(`part${currentSection}`).style.display = 'block';
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSection === 1;
+            document.getElementById('nextBtn').disabled = currentSection === totalSections;
+            
+            // Show submit section if on last part
+            const submitSection = document.getElementById('submitSection');
+            if (currentSection === totalSections) {
+                submitSection.style.display = 'block';
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                submitSection.style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+            
+            // Update progress bar
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function submitTest() {
+            // Pause all timers
+            for (let section = 1; section <= 4; section++) {
+                if (intervals[section]) {
+                    clearInterval(intervals[section]);
+                }
+            }
+            
+            if (confirm('Are you sure you want to submit your test? You cannot make changes after submission.')) {
+                // Collect all answers
+                const answers = {};
+                
+                // Collect Part 1 answers
+                for (let i = 1; i <= 5; i++) {
+                    const input = document.getElementById(`p1q${i}`);
+                    answers[`part1_q${i}`] = {
+                        answer: input.value,
+                        wordCount: countWords(input.value)
+                    };
+                }
+                
+                // Collect Part 2 answer
+                const p2input = document.getElementById('p2q1');
+                answers['part2_q1'] = {
+                    answer: p2input.value,
+                    wordCount: countWords(p2input.value)
+                };
+                
+                // Collect Part 3 answers
+                for (let i = 1; i <= 3; i++) {
+                    const input = document.getElementById(`p3q${i}`);
+                    answers[`part3_q${i}`] = {
+                        answer: input.value,
+                        wordCount: countWords(input.value)
+                    };
+                }
+                
+                // Collect Part 4 answers
+                for (let i = 1; i <= 2; i++) {
+                    const input = document.getElementById(`p4q${i}`);
+                    answers[`part4_q${i}`] = {
+                        answer: input.value,
+                        wordCount: countWords(input.value)
+                    };
+                }
+                
+                // Include timer data
+                answers.timerData = {
+                    timeRemaining: timers,
+                    originalTimes: originalTimes
+                };
+                
+                console.log('Test submitted:', answers);
+                alert('Test submitted successfully! Your answers have been recorded.');
+                
+                // In a real application, you would send this data to a server
+                // fetch('/submit-test', { method: 'POST', body: JSON.stringify(answers) });
+            }
+        }
+
+        // Initialize word counters for all inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize timers
+            initializeTimers();
+            
+            // Add event listeners to all inputs
+            Object.keys(wordTargets).forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', () => updateWordCounter(inputId));
+                    input.addEventListener('paste', () => {
+                        setTimeout(() => updateWordCounter(inputId), 10);
+                    });
+                    // Initialize counter
+                    updateWordCounter(inputId);
+                }
+            });
+        });
+
+        // Auto-save functionality (stores in memory only)
+        let autoSaveData = {};
+        
+        function autoSave() {
+            Object.keys(wordTargets).forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    autoSaveData[inputId] = input.value;
+                }
+            });
+            // Also save timer states
+            autoSaveData.timers = {...timers};
+            console.log('Auto-saved progress');
+        }
+        
+        // Auto-save every 30 seconds
+        setInterval(autoSave, 30000);
+        
+        // Save on page unload
+        window.addEventListener('beforeunload', function() {
+            autoSave();
+        });
+
+        // Prevent accidental page refresh during test
+        window.addEventListener('beforeunload', function (e) {
+            const hasContent = Object.keys(wordTargets).some(inputId => {
+                const input = document.getElementById(inputId);
+                return input && input.value.trim() !== '';
+            });
+            
+            if (hasContent) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+    </script>
+</body>
+</html>
